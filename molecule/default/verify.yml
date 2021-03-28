@@ -1,0 +1,15 @@
+---
+- name: Verify
+  hosts: all
+
+  tasks:
+    - name: get return code for anki -h
+      command: anki -h
+      register: anki
+
+    - name: Verify Anki is installed.
+      assert:
+        that:
+          - anki.rc == 0
+        success_msg: "Anki is installed."
+        fail_msg: "Anki is not installed."

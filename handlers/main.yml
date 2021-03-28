@@ -1,0 +1,6 @@
+---
+- name: execute anki install script
+  command: ./install.sh
+  args:
+    chdir: "{{ anki_dir_prefix }}{{ archive_dir.files[0] }}"
+  become: true

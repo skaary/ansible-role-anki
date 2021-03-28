@@ -1,0 +1,29 @@
+---
+- name: ensure required libraries for recent ubuntu installations are present
+  apt:
+    name: "{{ required_packages }}"
+    state: present
+
+- name: fetch latest anki release version
+  uri:
+    url: "{{ anki_repo_api }}"
+    body_format: json
+    return_content: true
+  register: anki_json
+
+- name: check if latest anki release already exists
+  stat:
+    path: "{{ anki_dir_prefix }}{{ anki_latest_dir }}"
+  register: latest
+
+- name: download and extract anki tar file
+  unarchive:
+    src: "{{ anki_download_url }}"
+    dest: "{{ anki_dir_prefix }}"
+    remote_src: true
+    list_files: true
+  when: latest.stat.exists == false
+  register: archive_dir
+  become: true
+  notify:
+    - execute anki install script

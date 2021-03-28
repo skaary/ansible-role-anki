@@ -1,0 +1,14 @@
+---
+anki_version: "{{ anki_json.json.tag_name }}"
+anki_repo_api: "https://api.github.com/repos/ankitects/anki/releases/latest"
+anki_release: "https://github.com/ankitects/anki/releases/download/"
+anki_download_url: >-
+  {{ anki_release }}{{ anki_version }}/anki-{{ anki_version }}-linux.tar.bz2
+anki_dir_prefix: /opt/
+anki_latest_dir: anki-{{ anki_version }}-linux
+required_packages:
+  - libxcb-xinerama0
+  - libnss3
+  - libqt5gui5
+  - libxkbcommon-x11-0
+  - xdg-utils
