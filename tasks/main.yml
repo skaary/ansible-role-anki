@@ -11,19 +11,33 @@
     return_content: true
   register: anki_json
 
-- name: check if latest anki release already exists
+- name: check if anki directory already exists
   stat:
-    path: "{{ anki_dir_prefix }}{{ anki_latest_dir }}"
-  register: latest
+    path: "{{ anki_dir }}"
+  register: old_anki
+
+- name: ensure old anki directory is removed
+  file:
+    path: "{{ anki_dir }}"
+    state: absent
+  when: old_anki.stat.exists
+
+- name: ensure anki directory exists
+  file:
+    path: "{{ anki_dir }}"
+    state: directory
 
 - name: download and extract anki tar file
   unarchive:
     src: "{{ anki_download_url }}"
-    dest: "{{ anki_dir_prefix }}"
+    dest: "{{ anki_dir }}"
     remote_src: true
-    list_files: true
-  when: latest.stat.exists == false
+    extra_opts: [--strip-components=1]
   register: archive_dir
   become: true
-  notify:
-    - execute anki install script
+
+- name: execute anki install script
+  command: ./install.sh
+  args:
+    chdir: "{{ anki_dir }}"
+  become: true
