@@ -3,6 +3,7 @@
   apt:
     name: "{{ required_packages }}"
     state: present
+  become: true
 
 - name: fetch latest anki release version
   uri:
@@ -21,11 +22,15 @@
     path: "{{ anki_dir }}"
     state: absent
   when: old_anki.stat.exists
+  become: true
 
 - name: ensure anki directory exists
   file:
     path: "{{ anki_dir }}"
     state: directory
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_id }}"
+  become: true
 
 - name: download and extract anki tar file
   unarchive:
